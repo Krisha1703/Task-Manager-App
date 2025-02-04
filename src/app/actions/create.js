@@ -7,6 +7,13 @@ import Task from "../../models/task";
 export async function createTask(taskData) {
   await dbConnect();
   try {
+    // Ensure tags is an array of strings
+    if (typeof taskData.tags === 'string') {
+      taskData.tags = taskData.tags.split(',').map(tag => tag.trim());
+    } else if (!Array.isArray(taskData.tags)) {
+      taskData.tags = [];
+    }
+
     const newTask = await Task.create(taskData);
     console.log("Task created:", newTask);
     return { success: true, data: newTask };

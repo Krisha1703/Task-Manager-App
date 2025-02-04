@@ -13,7 +13,9 @@ const Page = () => {
         const response = await fetch("/api/fetch");
         const result = await response.json();
         if (result.success) {
+          console.log("result.data: ",result.data); // Inspect the structure of the fetched tasks
           setTasks(result.data);
+          console.log("set task: ",tasks); // Inspect the structure of the fetched tasks
         }
       } catch (error) {
         console.error("Error fetching tasks:", error);

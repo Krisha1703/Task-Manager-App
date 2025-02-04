@@ -1,9 +1,9 @@
 import InputField from './input-field';
 import SubmitButton from './submit-button';
-import { useState } from 'react';
-import { createTask } from "../../app/actions/create";
+import { useState, useEffect } from 'react';
+import { updateTask } from "../../app/actions/update"; 
 
-const ModalBody = () => {
+const ModalBody = ({ taskId, existingData, setShowModal }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -16,7 +16,40 @@ const ModalBody = () => {
     reminder: false,
   });
 
-  const [tagInput, setTagInput] = useState(""); // For handling tag input
+  const [tagInput, setTagInput] = useState("");
+
+const handleTagAdd = () => {
+  if (tagInput.trim() !== "" && !formData.tags.includes(tagInput.trim())) {
+    setFormData({
+      ...formData,
+      tags: [...formData.tags, tagInput.trim()],
+    });
+    setTagInput("");
+  }
+};
+
+const handleTagRemove = (tagToRemove) => {
+  setFormData({
+    ...formData,
+    tags: formData.tags.filter(tag => tag !== tagToRemove),
+  });
+};
+
+  useEffect(() => {
+    if (existingData) {
+      setFormData({
+        title: existingData.title || "",
+        description: existingData.description || "",
+        dueDate: existingData.dueDate ? new Date(existingData.dueDate).toISOString().split('T')[0] : "",
+        priority: existingData.priority || "",
+        status: existingData.status || "",
+        tags: Array.isArray(existingData.tags) ? existingData.tags : [], 
+        comments: existingData.comments || "",
+        assignee: existingData.assignee || "",
+        reminder: existingData.reminder || false,
+      });
+    }
+  }, [existingData]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -26,48 +59,39 @@ const ModalBody = () => {
     });
   };
 
-  const handleTagAdd = (e) => {
-    e.preventDefault();
-    const cleanedTag = tagInput.trim();
-  
-    if (cleanedTag && !formData.tags.includes(cleanedTag)) {
-      setFormData((prev) => ({
-        ...prev,
-        tags: [...prev.tags, cleanedTag], // Ensure tags is an array
-      }));
-      setTagInput("");
-    }
-  };
-
-  console.log("Updated tags:", formData.tags);  // Debugging line
-
-
-  const handleTagRemove = (tagToRemove) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: prev.tags.filter((tag) => tag !== tagToRemove),
-    }));
-  };
-
   const handleSubmit = async (e) => {
     //e.preventDefault();
-  
-    // Ensure tags is an array (it should already be, but this validates)
-    const validatedTags = Array.isArray(formData.tags) ? formData.tags : [];
-    
-    const result = await createTask({ ...formData, tags: validatedTags });
-    if (result.success) {
-      alert("Task created successfully!");
-    } else {
-      alert(`Error: ${result.error}`);
+
+    const updatedTask = {
+      taskId, 
+      title: formData.title,
+      description: formData.description,
+      priority: formData.priority,
+      status: formData.status,
+      tags: formData.tags,
+      dueDate: formData.dueDate,
+      comments: formData.comments,
+      assignee: formData.assignee,
+      reminder: formData.reminder,
+    };
+
+    try {
+      const result = await updateTask(updatedTask); 
+      if (result.success) {
+        console.log("Task updated successfully:", result.data);
+        setShowModal(false);
+      } else {
+        console.error("Update failed:", result.error);
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
     }
-  
   };
 
   return (
     <div className="p-4 bg-gradient-to-r from-primary to-secondary">
       <form onSubmit={handleSubmit} className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {/* Row 1: Title, Due Date, Assignee */}
+        {/* Title, Due Date, Assignee */}
         <InputField 
           id="title"
           label="Title"
@@ -96,12 +120,12 @@ const ModalBody = () => {
           required
         />
 
-        {/* Row 2: Priority, Status, Tags */}
+        {/* Priority, Status, Tags */}
         <div>
           <label htmlFor="priority" className="block text-md font-medium">Priority</label>
           <select 
-            id={"priority"}
-            name={"priority"}
+            id="priority"
+            name="priority"
             value={formData.priority} 
             onChange={handleChange}
             required 
@@ -117,8 +141,8 @@ const ModalBody = () => {
         <div>
           <label htmlFor="status" className="block text-md font-medium">Status</label>
           <select 
-            id={"status"} 
-            name={"status"}
+            id="status"
+            name="status"
             value={formData.status} 
             onChange={handleChange}
             required 
@@ -131,8 +155,8 @@ const ModalBody = () => {
           </select>
         </div>
 
-          {/* Tags Input */}
-          <div>
+        {/* Tags Input */}
+        <div>
           <label htmlFor="tags" className="block text-md font-medium">Tags</label>
           <div className="flex items-center space-x-2">
             <input
@@ -172,7 +196,7 @@ const ModalBody = () => {
           </div>
         </div>
 
-        {/* Row 3: Description, Comments, Reminder */}
+        {/* Description, Comments, Reminder */}
         <div className="md:col-span-1">
           <InputField 
             id="description"
@@ -180,7 +204,6 @@ const ModalBody = () => {
             value={formData.description}
             onChange={handleChange}
             required
-            description
             placeholder="Enter the task description"
           />
         </div>
@@ -191,16 +214,15 @@ const ModalBody = () => {
             label="Comments/Notes"
             value={formData.comments}
             onChange={handleChange}
-            description
             placeholder="Add any additional notes"
           />
         </div>
 
         <div className="flex items-center space-x-2">
           <input 
-            id={"reminder"}
-            type={"checkbox"} 
-            name={"reminder"}
+            id="reminder"
+            type="checkbox" 
+            name="reminder"
             checked={formData.reminder} 
             onChange={handleChange}
             className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
@@ -209,7 +231,7 @@ const ModalBody = () => {
         </div>
 
         <div className="w-full md:ml-[70vw] ml-[-5vw]">
-          <SubmitButton type="submit" create={true} text={"Create Task"}/>
+          <SubmitButton type="submit" create={true} text="Update Task"/>
         </div>
       </form>
     </div>

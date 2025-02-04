@@ -11,6 +11,8 @@ export default {
         primary: "#f5c6ec",
         secondary: "#d0b9f5",
         button: "rgb(0, 79, 139)",
+        edit: "#4caf50",
+        delete: "#f44336"
       },
     },
   },
