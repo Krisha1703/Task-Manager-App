@@ -1,7 +1,8 @@
-import InputField from './input-field';
-import SubmitButton from './submit-button';
+//Update Task - Modal Body
+import InputField from '../input-field';
+import SubmitButton from '../submit-button';
 import { useState, useEffect } from 'react';
-import { updateTask } from "../../app/actions/update"; 
+import { updateTask } from "@/app/actions/update"; 
 
 const ModalBody = ({ taskId, existingData, setShowModal }) => {
   const [formData, setFormData] = useState({
@@ -60,8 +61,6 @@ const handleTagRemove = (tagToRemove) => {
   };
 
   const handleSubmit = async (e) => {
-    //e.preventDefault();
-
     const updatedTask = {
       taskId, 
       title: formData.title,
@@ -78,7 +77,7 @@ const handleTagRemove = (tagToRemove) => {
     try {
       const result = await updateTask(updatedTask); 
       if (result.success) {
-        console.log("Task updated successfully:", result.data);
+        alert("Task updated successfully:", result.data);
         setShowModal(false);
       } else {
         console.error("Update failed:", result.error);

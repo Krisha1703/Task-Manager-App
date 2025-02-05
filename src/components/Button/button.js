@@ -1,3 +1,4 @@
+//Animated button
 import {motion} from "framer-motion";
 
 const Button = ({text, onClick, type, create}) => {

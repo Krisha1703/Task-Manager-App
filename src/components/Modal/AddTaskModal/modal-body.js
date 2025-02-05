@@ -1,7 +1,8 @@
-import InputField from './input-field';
-import SubmitButton from './submit-button';
+//Add Task - Modal Body
+import InputField from '../input-field';
+import SubmitButton from '../submit-button';
 import { useState } from 'react';
-import { createTask } from "../../app/actions/create";
+import { createTask } from "@/app/actions/create";
 
 const ModalBody = () => {
   const [formData, setFormData] = useState({
@@ -39,9 +40,6 @@ const ModalBody = () => {
     }
   };
 
-  console.log("Updated tags:", formData.tags);  // Debugging line
-
-
   const handleTagRemove = (tagToRemove) => {
     setFormData((prev) => ({
       ...prev,
@@ -50,9 +48,7 @@ const ModalBody = () => {
   };
 
   const handleSubmit = async (e) => {
-    //e.preventDefault();
-  
-    // Ensure tags is an array (it should already be, but this validates)
+   
     const validatedTags = Array.isArray(formData.tags) ? formData.tags : [];
     
     const result = await createTask({ ...formData, tags: validatedTags });
@@ -211,6 +207,7 @@ const ModalBody = () => {
         <div className="w-full md:ml-[70vw] ml-[-5vw]">
           <SubmitButton type="submit" create={true} text={"Create Task"}/>
         </div>
+
       </form>
     </div>
   );

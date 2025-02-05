@@ -1,3 +1,4 @@
+//Animated button for editing and filtering task
 import {motion} from "framer-motion";
 
 const EditButton = ({text, onClick, type, deleting}) => {
