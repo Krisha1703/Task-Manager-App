@@ -51,7 +51,7 @@ src/
 │   ├── header.js
 │   ├── home-page.js
 │   └── list-task.js
-|   └── login.js
+│   └── login.js
 ├── lib/
 │   └── db.js                  # Database connection
 └── models/
@@ -76,12 +76,25 @@ src/
      ```env
      NEXTAUTH_URL=http://localhost:3000
      NEXTAUTH_SECRET=your_secret_key
+
+     # Google OAuth
      GOOGLE_CLIENT_ID=your_google_client_id
      GOOGLE_CLIENT_SECRET=your_google_client_secret
-     GITHUB_CLIENT_ID=your_google_client_id
-     GITHUB_CLIENT_SECRET=your_google_client_secret
+
+     # GitHub OAuth
+     GITHUB_CLIENT_ID=your_github_client_id
+     GITHUB_CLIENT_SECRET=your_github_client_secret
+
+     # MongoDB Database (for storing users)
      MONGODB_URI=your_mongodb_connection_string
+
      ```
+  ### 📌 Note:
+  For testing purposes, you can use **test credentials**:
+
+  - **Email:** `testuser@mail.com`
+  - **Password:** `testuser`
+
 
 4. **Run the development server 🚀:**
    ```bash
