@@ -128,7 +128,7 @@ src/
   ![Filter Tasks](/public/screenshots/filter-task.png) 
 
 - **Delete Task 🗑️:**
-  ![Delete Task](/public/screenshots/delete-task.png) 
+  ![Delete Task](/public/screenshots/delete.png) 
 
 ## 🔧 Technologies Used
 
