@@ -4,7 +4,7 @@ A feature-rich Task Manager application built using **Next.js**, **Tailwind CSS*
 
 ## 🌟 **Features**
 
-- **User Authentication** 🔒: Secure login/logout functionality using Google via NextAuth.
+- **User Authentication** 🔒: Secure login/logout functionality using Google, GitHub, and Credentials via NextAuth.
 - **Task Management** ✅: Create, update, and delete tasks with detailed descriptions.
 - **Task Filtering** 🔍: Filter tasks based on:
   - **Title** 📝
@@ -51,6 +51,7 @@ src/
 │   ├── header.js
 │   ├── home-page.js
 │   └── list-task.js
+|   └── login.js
 ├── lib/
 │   └── db.js                  # Database connection
 └── models/
@@ -77,6 +78,8 @@ src/
      NEXTAUTH_SECRET=your_secret_key
      GOOGLE_CLIENT_ID=your_google_client_id
      GOOGLE_CLIENT_SECRET=your_google_client_secret
+     GITHUB_CLIENT_ID=your_google_client_id
+     GITHUB_CLIENT_SECRET=your_google_client_secret
      MONGODB_URI=your_mongodb_connection_string
      ```
 

@@ -1,19 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
-import { signIn, useSession } from "next-auth/react"; // Import useSession from next-auth
+import { signIn, useSession } from "next-auth/react"; 
 import Image from "next/image";
 import { motion } from "framer-motion";
 import BackgroundParticles from "./particles";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
-import HomePage from "@/components/home-page"; // Import HomePage component
+import { useRouter } from "next/navigation"; 
+import HomePage from "@/components/home-page"; 
 
 const LoginModal = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const { data: session, status } = useSession(); // Access session data and status
-  const router = useRouter(); // Use router for navigation
+  const { data: session, status } = useSession(); 
+  const router = useRouter(); 
 
   // Handle mouse movement for mouse-based interactions
   const handleMouseMove = (e) => {
@@ -29,14 +29,13 @@ const LoginModal = () => {
     const result = await signIn("credentials", {
       email,
       password,
-      redirect: false, // Prevent full-page reload
+      redirect: false, 
     });
 
     if (result.error) {
       setError(result.error);
     } else {
-      // If login is successful, redirect to the homepage
-      router.push("/"); // Navigate to the homepage
+      router.push("/"); 
     }
   };
 
@@ -48,7 +47,7 @@ const LoginModal = () => {
     };
   }, []);
 
-  // Show a loading state until the session status is determined
+ 
   if (status === "loading") {
     return (
       <div className="bg-gradient-to-r from-primary to-secondary w-full h-screen p-4">
@@ -57,7 +56,6 @@ const LoginModal = () => {
     );
   }
 
-  // If user is logged in, show HomePage, otherwise show login modal
   if (session) {
     return <HomePage />;
   }
@@ -66,7 +64,7 @@ const LoginModal = () => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-10">
       <BackgroundParticles />
       <div
-        className="bg-white p-6 rounded-lg shadow-lg w-1/3 relative z-10"
+        className="bg-white p-6 rounded-lg shadow-lg md:w-1/3 w-5/6 relative z-10"
         style={{
           transform: `translate(${(mousePosition.x - window.innerWidth / 2) * 0.02}px, ${(mousePosition.y - window.innerHeight / 2) * 0.02}px)`,
         }}
@@ -124,7 +122,7 @@ const LoginModal = () => {
       </div>
 
       <motion.div
-        className="text-8xl mt-0"
+        className="text-8xl mt-0 md:block hidden"
         initial={{ x: 40 }}
         animate={{ x: 20, y: 10 }}
         transition={{
