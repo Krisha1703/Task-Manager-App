@@ -3,6 +3,7 @@ import InputField from '../input-field';
 import SubmitButton from '../submit-button';
 import { useState, useEffect } from 'react';
 import { updateTask } from "@/app/actions/update"; 
+import Button from '@/components/Button/button';
 
 const ModalBody = ({ taskId, existingData, setShowModal }) => {
   const [formData, setFormData] = useState({
@@ -166,13 +167,8 @@ const handleTagRemove = (tagToRemove) => {
               placeholder="Enter a tag"
               className="flex-1 border border-gray-300 rounded-md p-2 focus:ring-primary focus:border-primary"
             />
-            <button
-              onClick={handleTagAdd}
-              className="bg-primary text-white px-3 py-1 rounded-md hover:bg-secondary transition"
-              type="button"
-            >
-              Add
-            </button>
+            <Button text={"Add"} onClick={handleTagAdd} add/>
+
           </div>
 
           {/* Display Added Tags */}
@@ -180,13 +176,12 @@ const handleTagRemove = (tagToRemove) => {
             {formData.tags.map((tag, index) => (
               <span
                 key={index}
-                className="bg-gray-200 text-sm px-2 py-1 rounded-full flex items-center space-x-1"
+                className="bg-gray-100 text-sm px-2 py-1 rounded-md flex items-center space-x-1"
               >
                 {tag}
                 <button
-                  type="button"
                   onClick={() => handleTagRemove(tag)}
-                  className="ml-1 text-red-500 hover:text-red-700"
+                  className="ml-3 font-semibold text-red-500 hover:text-red-700"
                 >
                   ✕
                 </button>

@@ -8,10 +8,10 @@ import FilterTask from './filter-task';
 const ListTask = ({ tasks = [] }) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [viewDetails, setViewDetails] = useState(null);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [bellStates, setBellStates] = useState({});
   const [allTasks, setAllTasks] = useState(tasks);
+  const [viewDetails, setViewDetails] = useState(null);
 
   useEffect(() => {
     setAllTasks(tasks);
@@ -20,10 +20,6 @@ const ListTask = ({ tasks = [] }) => {
   const handleEditClick = (task) => {
     setSelectedTask(task);
     setShowModal(true);
-  };
-
-  const toggleViewDetails = (taskId) => {
-    setViewDetails(viewDetails === taskId ? null : taskId);
   };
 
   const handleDelete = async (taskId) => {
@@ -38,13 +34,6 @@ const ListTask = ({ tasks = [] }) => {
     }
   };
 
-  const handleBellClick = (taskId) => {
-    setBellStates(prev => ({
-      ...prev,
-      [taskId]: !prev[taskId],
-    }));
-  };
-
   const handleTaskUpdate = (updatedTask) => {
     setAllTasks(prevTasks => prevTasks.map(task => 
       task._id === updatedTask._id ? updatedTask : task
@@ -52,80 +41,110 @@ const ListTask = ({ tasks = [] }) => {
     setShowModal(false);
   };
 
+  const toggleViewDetails = (taskId) => {
+    setViewDetails(viewDetails === taskId ? null : taskId);
+  };
+
+  const handleBellClick = (taskId) => {
+    setBellStates(prev => ({
+      ...prev,
+      [taskId]: !prev[taskId],
+    }));
+  };
+
+  const getTasksByStatus = (status) => {
+    return (filteredTasks.length > 0 ? filteredTasks : allTasks).filter(task => task.status === status);
+  };
+
   return (
     <div className="p-6 min-h-screen">
-      <div className='flex justify-between'>
-        <h1 className="text-3xl font-bold mb-4">List of Tasks</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Task Board</h1>
         <FilterTask setFilteredTasks={setFilteredTasks} tasks={allTasks} />
       </div>
 
-      {(filteredTasks.length > 0 ? filteredTasks : allTasks).length === 0 ? (
-        <p className="text-center text-gray-500">No tasks available.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {(filteredTasks.length > 0 ? filteredTasks : allTasks).map((task) => {
-            const isBellActive = bellStates[task._id] ?? task.reminder;
-            const daysLeft = Math.ceil((new Date(task.dueDate) - new Date()) / (1000 * 3600 * 24));
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <TaskColumn title="To Do" color="gray" tasks={getTasksByStatus("To Do")} handleEditClick={handleEditClick} handleDelete={handleDelete} toggleViewDetails={toggleViewDetails} viewDetails={viewDetails} handleBellClick={handleBellClick} bellStates={bellStates} />
+        <TaskColumn title="In Progress" color="blue" tasks={getTasksByStatus("In Progress")} handleEditClick={handleEditClick} handleDelete={handleDelete} toggleViewDetails={toggleViewDetails} viewDetails={viewDetails} handleBellClick={handleBellClick} bellStates={bellStates} />
+        <TaskColumn title="Completed" color="green" tasks={getTasksByStatus("Completed")} handleEditClick={handleEditClick} handleDelete={handleDelete} toggleViewDetails={toggleViewDetails} viewDetails={viewDetails} handleBellClick={handleBellClick} bellStates={bellStates} />
+      </div>
 
-            return (
-              <div key={task._id} className="bg-white p-4 rounded-xl shadow-md border-2 border-gray-200 hover:shadow-lg transition duration-300">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-bold text-button">{task.title}</h3>
-                  {task.reminder && (
-                    <span className="text-red-500 cursor-pointer" onClick={() => handleBellClick(task._id)}>
-                      {isBellActive ? '🔔' : '🔕'} <span className="ml-1">{daysLeft} days</span>
-                    </span>
-                  )}
-                </div>
+      {/* Update Modal */}
+      {showModal && <UpdateTask setShowModal={setShowModal} task={selectedTask} onUpdate={handleTaskUpdate} />}
+    </div>
+  );
+};
 
-                <p className="font-semibold">Due: {new Date(task.dueDate).toLocaleDateString()}</p>
-                <p>{task.description}</p>
+// Reusable Task Column Component
+const TaskColumn = ({ title, tasks, handleEditClick, handleDelete, toggleViewDetails, viewDetails, handleBellClick, bellStates }) => {
+  return (
+    <div className={`bg-white rounded-lg shadow-md relative h-full`}>
+      <div className='bg-button flex-1 top-0 left-0 h-10 rounded-t-lg'>
+        <h2 className={`text-lg flex justify-center items-center h-full font-semibold text-white uppercase`}>{title} ({tasks.length})</h2>
+      </div>
+      <div className="space-y-4 p-4">
+        {tasks.length === 0 ? <p>No tasks</p> : tasks.map(task => (
+          <TaskCard key={task._id} task={task} onEdit={handleEditClick} onDelete={handleDelete} toggleViewDetails={toggleViewDetails} viewDetails={viewDetails} handleBellClick={handleBellClick} bellStates={bellStates} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
-                <div className="flex space-x-2">
-                  {task.tags?.length ? (
-                    task.tags.map((tag, index) => (
-                      <p key={index} className="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-sm my-2">
-                        {tag}
-                      </p>
-                    ))
-                  ) : (
-                    <p>No tags available</p>
-                  )}
-                </div>
+// Reusable Task Card Component
+const TaskCard = ({ task, onEdit, onDelete, toggleViewDetails, viewDetails, handleBellClick, bellStates }) => {
+  const isBellActive = bellStates[task._id] ?? task.reminder;
+  const daysLeft = Math.ceil((new Date(task.dueDate) - new Date()) / (1000 * 3600 * 24));
 
-                <div className="flex justify-between items-center my-2">
-                  <p className={`text-md text-white rounded-md p-1 text-center w-1/3 ${
-                    task.priority === 'High' ? 'bg-red-500' : task.priority === 'Low' ? 'bg-yellow-500' : 'bg-orange-500'
-                  }`}>
-                    {task.priority}
-                  </p>
+  return (
+    <div className={`p-4 rounded-lg shadow-md border border-gray-200`}>
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-bold text-button cursor-pointer" onClick={() => toggleViewDetails(task._id)}>{task.title}</h3>
+        {task.reminder && (
+          <span className="text-red-500 cursor-pointer text-nowrap" onClick={() => handleBellClick(task._id)}>
+            {isBellActive ? '🔔' : '🔕'} <span className="ml-1 ">{daysLeft} days</span>
+          </span>
+        )}
+      </div>
 
-                  <p className={`text-md rounded-md p-1 text-center w-1/3 bg-opacity-20 ${
-                    task.status === 'Completed' ? 'text-green-500 bg-green-500' : task.status === 'In Progress' ? 'text-blue-500 bg-blue-500' : 'text-yellow-500 bg-yellow-500'
-                  }`}>
-                    {task.status}
-                  </p>
-                </div>
+      <div className="flex justify-between items-center">
+        <p className="font-semibold">Due: {new Date(task.dueDate).toLocaleDateString()}</p>
 
-                <div className="flex w-full space-x-2 justify-between items-center my-2">
-                  <EditButton text={"Edit"} onClick={() => handleEditClick(task)} />
-                  <EditButton text={"Delete"} deleting onClick={() => handleDelete(task._id)} />
-                </div>
+        <p className={`text-sm text-white rounded-md p-1 px-2 text-center w-1/4 ${
+          task.priority === 'High' ? 'bg-red-500' : task.priority === 'Low' ? 'bg-yellow-500' : 'bg-orange-500'
+        }`}>
+          {task.priority}
+        </p>
+      </div>
 
-                <EditButton text={"View Details"} onClick={() => toggleViewDetails(task._id)} />
-                {viewDetails === task._id && (
-                  <div className="mt-2 p-2 rounded-md">
-                    <h1><strong>Assignee:</strong> {task.assignee || 'Not Assigned'}</h1>
-                    <h1><strong>Comments:</strong> {task.comments || 'No Comments'}</h1>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+      <p className="my-2">{task.description}</p>
+
+      <div className="flex justify-between items-center my-2">
+        <div className="flex space-x-2">
+          {task.tags?.length ? (
+            task.tags.map((tag, index) => (
+              <p key={index} className="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-sm my-2">
+                {tag}
+              </p>
+            ))
+          ) : (
+            <p className='hidden'>No tags available</p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex space-x-2 mt-3">
+        <EditButton text={"Edit"} onClick={() => onEdit(task)} />
+        <EditButton text={"Delete"} deleting onClick={() => onDelete(task._id)} />
+      </div>
+
+      {/* View Details Section */}
+      {viewDetails === task._id && (
+        <div className="mt-2 p-2 rounded-md bg-gray-100">
+          <h1><strong>Assignee:</strong> {task.assignee || 'Not Assigned'}</h1>
+          <h1><strong>Comments:</strong> {task.comments || 'No Comments'}</h1>
         </div>
       )}
-
-      {showModal && <UpdateTask setShowModal={setShowModal} task={selectedTask} onUpdate={handleTaskUpdate} />}
     </div>
   );
 };
