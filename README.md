@@ -116,13 +116,13 @@ src/
   ![Home Page](/public/screenshots/homepage.png) 
 
 - **Task Creation Modal 📝:**
-  ![Create Task](/public/screenshots/create-task.png) 
+  ![Create Task](/public/screenshots/create.png) 
 
 - **View Task Details 📝:**
   ![Create Task](/public/screenshots/view-task-details.png) 
 
 - **Task Update Modal 🔄:**
-  ![Update Task](/public/screenshots/update-task.png) 
+  ![Update Task](/public/screenshots/update.png) 
 
 - **Task Filtering 🔎:**
   ![Filter Tasks](/public/screenshots/filter-task.png) 
