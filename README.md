@@ -72,7 +72,7 @@ src/
    ```
 
 3. **Configure environment variables 🌍:**
-   - Create a `.env.local` file with the following:
+   Create a `.env.local` file with the following:
      ```env
      NEXTAUTH_URL=http://localhost:3000
      NEXTAUTH_SECRET=your_secret_key
@@ -85,15 +85,15 @@ src/
      GITHUB_CLIENT_ID=your_github_client_id
      GITHUB_CLIENT_SECRET=your_github_client_secret
 
-     # MongoDB Database (for storing users)
+     # MongoDB Database 
      MONGODB_URI=your_mongodb_connection_string
 
      ```
-  ### 📌 Note:
-  For testing purposes, you can use **test credentials**:
+    ### 📌 Note:
+    For testing purposes, you can use **test credentials**:
 
-  - **Email:** `testuser@mail.com`
-  - **Password:** `testuser`
+    - **Email:** `testuser@mail.com`
+    - **Password:** `testuser`
 
 
 4. **Run the development server 🚀:**
