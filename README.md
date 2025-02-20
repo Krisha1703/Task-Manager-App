@@ -109,17 +109,17 @@ src/
 
 ## 📸 Screenshots
 
-- **Logout Home Page 🏠:**
-  ![Home Page](/public/screenshots/logout-homepage.png) 
+- **Login Modal 🏠:**
+  ![Home Page](/public/screenshots/login.png) 
 
 - **Login Home Page 🏠:**
-  ![Home Page](/public/screenshots/login-homepage.png) 
+  ![Home Page](/public/screenshots/homepage.png) 
 
 - **Task Creation Modal 📝:**
   ![Create Task](/public/screenshots/create-task.png) 
 
 - **View Task Details 📝:**
-  ![Create Task](/public/screenshots/view-details.png) 
+  ![Create Task](/public/screenshots/view-task-details.png) 
 
 - **Task Update Modal 🔄:**
   ![Update Task](/public/screenshots/update-task.png) 
